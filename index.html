@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>48Zone | Global Stage Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #0f172a;
+            --accent: #ef4444;
+            --glass: rgba(255, 255, 255, 0.05);
+            --gold: #f59e0b;
+            --text-muted: #94a3b8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        
+        body { 
+            background: linear-gradient(rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.9)), 
+                        url('https://images.unsplash.com/photo-1514525253361-bee8a18744ad?q=80&w=1964&auto=format&fit=crop'); 
+            background-size: cover;
+            background-attachment: fixed;
+            color: #fff;
+            line-height: 1.6;
+        }
+
+        header {
+            position: fixed; top: 0; width: 100%; padding: 20px 8%;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 1000; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .logo { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 900; }
+        .logo span { color: var(--accent); }
+        nav ul { display: flex; list-style: none; gap: 30px; }
+        nav a { text-decoration: none; color: #fff; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; cursor: pointer; }
+        nav a:hover { color: var(--accent); }
+
+        .page { display: none; padding: 140px 10% 80px; min-height: 100vh; animation: fadeIn 0.5s ease; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .glass-card { background: var(--glass); backdrop-filter: blur(10px); padding: 35px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); }
+        h2 { font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 20px; color: var(--gold); }
+
+        /* GROUP SELECTOR */
+        .selector { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 30px; }
+        .btn-g { padding: 10px 20px; border: 1px solid rgba(255,255,255,0.1); border-radius: 50px; background: transparent; color: #fff; cursor: pointer; transition: 0.3s; font-size: 13px; }
+        .btn-g.active { background: var(--accent); border-color: var(--accent); box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); }
+
+        /* MEMBER DISPLAY */
+        .desc-box { margin-bottom: 30px; border-left: 3px solid var(--accent); padding-left: 20px; font-style: italic; color: var(--text-muted); }
+        .grid-mb { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .box-mb { background: rgba(255,255,255,0.03); padding: 25px; border-radius: 15px; }
+        .list-nm { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; margin-top: 15px; }
+        .nm { font-size: 12px; padding: 6px; background: rgba(255,255,255,0.05); border-radius: 4px; border: 1px solid rgba(255,255,255,0.02); }
+
+        /* PARTNERS */
+        .pt-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }
+        .pt-card { height: 80px; background: var(--glass); display: flex; align-items: center; justify-content: center; border-radius: 10px; font-weight: bold; font-size: 14px; opacity: 0.7; transition: 0.3s; }
+        .pt-card:hover { opacity: 1; border-color: var(--gold); background: rgba(255,255,255,0.1); }
+
+        /* AI CHAT */
+        #ai-wrap { position: fixed; bottom: 30px; right: 30px; z-index: 9999; }
+        #ai-icon { width: 60px; height: 60px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+        #ai-win { position: absolute; bottom: 75px; right: 0; width: 320px; height: 450px; background: #1e293b; border-radius: 15px; border: 1px solid var(--accent); display: none; flex-direction: column; overflow: hidden; }
+        .ai-h { padding: 15px; background: var(--accent); font-weight: bold; font-size: 14px; display: flex; justify-content: space-between; }
+        .ai-b { flex: 1; padding: 15px; overflow-y: auto; font-size: 13px; }
+        .msg { margin-bottom: 10px; padding: 10px; border-radius: 8px; max-width: 85%; }
+        .bot { background: #334155; align-self: flex-start; }
+        .usr { background: var(--accent); align-self: flex-end; margin-left: auto; }
+        .ai-f { padding: 10px; background: #0f172a; display: flex; }
+        .ai-f input { flex: 1; background: transparent; border: none; color: #fff; outline: none; }
+
+        footer { padding: 60px 8% 30px; background: #020617; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 50px; }
+        .f-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; }
+        .f-col h4 { color: var(--gold); margin-bottom: 20px; font-size: 14px; text-transform: uppercase; }
+        .f-col a { display: block; color: var(--text-muted); text-decoration: none; margin-bottom: 10px; font-size: 13px; transition: 0.3s; }
+        .f-col a:hover { color: #fff; transform: translateX(5px); }
+        .social-bar { display: flex; gap: 15px; margin-top: 20px; font-size: 22px; }
+        .social-bar a { color: #fff; opacity: 0.6; transition: 0.3s; }
+        .social-bar a:hover { opacity: 1; color: var(--accent); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">48<span>ZONE</span></div>
+        <nav>
+            <ul>
+                <li><a onclick="showPage('home')">Home</a></li>
+                <li><a onclick="showPage('idol')">Idol Grup</a></li>
+                <li><a onclick="showPage('about')">Tentang Kami</a></li>
+                <li><a onclick="showPage('partners')">Partner</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div id="home" class="page active">
+        <h2>Global Stage Legacy</h2>
+        <div class="glass-card">
+            <h3 style="color: var(--gold); margin-bottom: 15px;">Sejarah Awal Mula</h3>
+            <p>Dibentuk pada Desember 2005 oleh produser **Yasushi Akimoto**, 48 Group merevolusi industri musik dengan konsep **"Idols You Can Meet"**. Teater pertama dibangun di Akihabara (AKB48), tempat di mana fans bisa berinteraksi setiap hari.</p>
+            <p>Seiring berjalannya waktu, model ini diekspor ke luar Jepang, menciptakan grup lokal di berbagai negara yang tetap memegang teguh tradisi *Senbatsu* dan *Graduation*.</p>
+            <p><strong>Pendiri:</strong> Yasushi Akimoto (Tokoh kunci dibalik lirik dan konsep teater global).</p>
+        </div>
+    </div>
+
+    <div id="idol" class="page">
+        <h2>48 Group World Branches</h2>
+        <div class="selector">
+            <button class="btn-g active" onclick="filterGroup('jkt48', this)">JKT48</button>
+            <button class="btn-g" onclick="filterGroup('akb48', this)">AKB48</button>
+            <button class="btn-g" onclick="filterGroup('bnk48', this)">BNK48</button>
+            <button class="btn-g" onclick="filterGroup('mnl48', this)">MNL48</button>
+        </div>
+
+        <div id="groupInfo" class="desc-box">
+            </div>
+
+        <div id="memberDisplay" class="grid-mb">
+            </div>
+    </div>
+
+    <div id="about" class="page">
+        <h2>About 48Zone</h2>
+        <div class="glass-card">
+            <p>48Zone didirikan pada awal tahun 2024 sebagai respons terhadap pesatnya perkembangan fandom 48 Group di era digital. Kami memulai sebagai komunitas arsip data member dan kini bertransformasi menjadi portal informasi real-time berbasis AI.</p>
+            <p>Visi kami adalah menjadi jembatan antara idola dan fans melalui teknologi yang modern dan tampilan yang memanjakan mata.</p>
+        </div>
+    </div>
+
+    <div id="partners" class="page">
+        <h2>Our Official Partner</h2>
+        <div class="pt-grid">
+            <div class="pt-card">Vernalossom</div>
+            <div class="pt-card">IDN Media</div>
+            <div class="pt-card">Spotify Music</div>
+            <div class="pt-card">Sony Music JP</div>
+            <div class="pt-card">Showroom Live</div>
+            <div class="pt-card">TikTok Music</div>
+            <div class="pt-card">Google Cloud</div>
+            <div class="pt-card">DMM Teater</div>
+            <div class="pt-card">Warner Music</div>
+            <div class="pt-card">Hulu Japan</div>
+        </div>
+    </div>
+
+    <div id="ai-wrap">
+        <div id="ai-win">
+            <div class="ai-h">
+                <span>48Zone AI Assistant</span>
+                <i class="fas fa-times" onclick="toggleChat()" style="cursor:pointer"></i>
+            </div>
+            <div class="ai-b" id="chatLogs">
+                <div class="msg bot">Halo Bree! Gue 48Zone AI. Ada yang mau ditanya soal member atau sejarah 48?</div>
+            </div>
+            <div class="ai-f">
+                <input type="text" id="chatInput" placeholder="Ketik pesan..." onkeypress="handleChat(event)">
+                <i class="fas fa-paper-plane" onclick="sendChat()" style="color:var(--accent); cursor:pointer; padding:5px;"></i>
+            </div>
+        </div>
+        <div id="ai-icon" onclick="toggleChat()">
+            <i class="fas fa-robot" style="font-size: 24px;"></i>
+        </div>
+    </div>
+
+    <footer>
+        <div class="f-grid">
+            <div class="f-col">
+                <h4 style="font-family: 'Playfair Display'; font-size: 22px;">48<span>ZONE</span></h4>
+                <p style="font-size: 12px; color: #444;">Portal Global Terpercaya.</p>
+                <div class="social-bar">
+                    <a href="https://instagram.com/48zone_official"><i class="fab fa-instagram"></i></a>
+                    <a href="https://tiktok.com/@48zone"><i class="fab fa-tiktok"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            <div class="f-col">
+                <h4>5 Saluran WhatsApp</h4>
+                <a href="#">📢 Berita Utama & Info</a>
+                <a href="#">🎭 Jadwal Teater Harian</a>
+                <a href="#">📸 Galeri Foto Eksklusif</a>
+                <a href="#">🎤 Update Lagu & Setlist</a>
+                <a href="#">💡 Info Event & Handshake</a>
+            </div>
+            <div class="f-col">
+                <h4>Komunitas</h4>
+                <a href="#">🤝 WA Community Global</a>
+                <a href="#">💬 Forum Diskusi Wota</a>
+            </div>
+        </div>
+        <p style="text-align:center; margin-top:50px; font-size:10px; color:#222;">&copy; 2026 48Zone International. Not an official site of AKS.</p>
+    </footer>
+
+    <script>
+        const database = {
+            jkt48: {
+                desc: "JKT48 adalah sister group pertama di luar Jepang yang berbasis di Jakarta, Indonesia. Dibentuk tahun 2011, grup ini telah menjadi ikon budaya pop di Asia Tenggara.",
+                regular: ["Freya Jayawardana", "Angelina Christy", "Shania Gracia", "Feni Fitriyanti", "Marsha Lenathea", "Muthe", "Gita Sekar", "Indah Cahya", "Kathrina Irene", "Jessi", "Gracie", "Greesel"],
+                trainee: ["Abigail Rachel", "Adeline Wijaya", "Aisa Maharani", "Letycia Moreen", "Lana Vanya", "Michie", "Oline", "Regie"]
+            },
+            akb48: {
+                desc: "AKB48 adalah grup utama yang berbasis di Akihabara, Tokyo. Menjadi kiblat seluruh 48 Group dengan sejarah terpanjang sejak 2005.",
+                regular: ["Oguri Yui", "Murayama Yuiri", "Yamauchi Mizuki", "Chiba Erii", "Kuranoo Narumi", "Taguchi Manaka", "Mukaichi Mion"],
+                trainee: ["Ito Hyu", "Kawamura Yui", "Narita Kohina", "Kashima Eriki"]
+            },
+            bnk48: {
+                desc: "Berbasis di Bangkok, Thailand. BNK48 dikenal dengan produksi musik yang sangat berkualitas dan popularitas yang meledak di Thailand.",
+                regular: ["Hoop", "Paeyah", "Panda", "Fond", "Wee", "Gygee"],
+                trainee: ["Janry", "L", "Marine", "Palm", "Sindy"]
+            },
+            mnl48: {
+                desc: "Berbasis di Manila, Filipina. Dikenal dengan vokal membernya yang sangat kuat (powerhouse vocals) dibandingkan grup lainnya.",
+                regular: ["Sheki", "Abby", "Coleen", "Amy", "Frances"],
+                trainee: ["Rhea", "Rachel", "Kyla"]
+            }
+        };
+
+        function showPage(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            window.scrollTo(0,0);
+        }
+
+        function filterGroup(id, btn) {
+            document.querySelectorAll('.btn-g').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const g = database[id];
+            document.getElementById('groupInfo').innerText = g.desc;
+            document.getElementById('memberDisplay').innerHTML = `
+                <div class="box-mb">
+                    <h4 style="color:var(--gold); font-size:14px; margin-bottom:10px;">Regular Members</h4>
+                    <div class="list-nm">${g.regular.map(n => `<div class="nm">${n}</div>`).join('')}</div>
+                </div>
+                <div class="box-mb">
+                    <h4 style="color:var(--accent); font-size:14px; margin-bottom:10px;">Trainee</h4>
+                    <div class="list-nm">${g.trainee.map(n => `<div class="nm">${n}</div>`).join('')}</div>
+                </div>
+            `;
+        }
+
+        function toggleChat() {
+            const w = document.getElementById('ai-win');
+            w.style.display = w.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function handleChat(e) { if(e.key === 'Enter') sendChat(); }
+
+        function sendChat() {
+            const i = document.getElementById('chatInput');
+            const l = document.getElementById('chatLogs');
+            if(!i.value) return;
+
+            l.innerHTML += `<div class="msg usr">${i.value}</div>`;
+            const v = i.value.toLowerCase();
+            i.value = '';
+
+            setTimeout(() => {
+                let r = "Gue AI 48Zone, siap bantu Bree! Coba tanya soal member JKT48.";
+                if(v.includes("freya")) r = "Freya JKT48 itu member yang manis dan sangat berdedikasi tinggi!";
+                if(v.includes("akimoto")) r = "Yasushi Akimoto adalah orang yang bikin lirik semua lagu 48 group!";
+                l.innerHTML += `<div class="msg bot">${r}</div>`;
+                l.scrollTop = l.scrollHeight;
+            }, 600);
+        }
+
+        // Init
+        filterGroup('jkt48', document.querySelector('.btn-g'));
+    </script>
+</body>
+</html>
